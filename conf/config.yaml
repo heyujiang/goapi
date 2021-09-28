@@ -1,0 +1,22 @@
+runmode: debug               # 开发模式, debug, release, test
+addr: :8080                  # HTTP绑定端口
+name: apiserver              # API Server的名字
+url: http://127.0.0.1:8080   # pingServer函数请求的API服务器的ip:port
+max_ping_count: 10           # pingServer函数try的次数
+
+database:
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  password: root
+  db: db_goapi
+
+
+docker_database:
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  password: root
+  db: db_goapi
+
+gormlog: true
