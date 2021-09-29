@@ -8,8 +8,8 @@ import (
 
 type UserModel struct {
 	BaseModel
-	Username string `json:"username" gorm:"cloumn:username;not null" bind:"required" vaildate:"min=1,max=32"`
-	Password string `json:"password" gorm:"cloumn:password;not null" bind:"required" vaildate:"min=5,max=128"`
+	Username string `json:"username" gorm:"cloumn:username;not null" binding:"required" validate:"min=1,max=32"`
+	Password string `json:"password" gorm:"cloumn:password;not null" binding:"required" validate:"min=5,max=128"`
 }
 
 func (u *UserModel) TableName() string {

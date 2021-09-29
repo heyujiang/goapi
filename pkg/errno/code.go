@@ -9,6 +9,9 @@ var (
 	ErrVaildation = &Errno{Code: 20003, Message: "Validation failed."}
 	ErrEncrypt    = &Errno{Code: 20004, Message: "Password Encrypt failed."}
 	ErrCreateUser = &Errno{Code: 20005, Message: "创建用户失败."}
+	ErrDeleteUser = &Errno{Code: 20006, Message: "删除用户失败"}
+
+	ErrData = &Errno{Code: 20009, Message: "无数据"}
 
 	// user errors
 	ErrUserNotFound = &Errno{Code: 20102, Message: "The user was not found."}
