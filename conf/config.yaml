@@ -20,3 +20,5 @@ docker_database:
   db: db_goapi
 
 gormlog: true
+
+db_default_limit: 50
