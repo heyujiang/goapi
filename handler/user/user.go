@@ -6,6 +6,7 @@ import (
 	"goapi/handler"
 	"goapi/model"
 	"goapi/pkg/errno"
+	"goapi/service"
 	"strconv"
 )
 
@@ -16,6 +17,11 @@ type UserRequest struct {
 
 type UserResponse struct {
 	Username string `json:"username"`
+}
+
+type ListRequest struct {
+	Offset int `form:"offset" json:"offset"`
+	Limit  int `form:"limit" json:"limit"`
 }
 
 //创建新用户
@@ -93,12 +99,42 @@ func Get(ctx *gin.Context) {
 
 //更新用户
 func Update(ctx *gin.Context) {
+	userId, _ := strconv.Atoi(ctx.Param("id"))
+
+	var userModel model.UserModel
+
+	if err := ctx.Bind(&userModel); err != nil {
+		handler.SendResponse(ctx, err, nil)
+	}
+
+	userModel.Id = uint64(userId)
+
+	if err := userModel.Validate(); err != nil {
+		handler.SendResponse(ctx, err, nil)
+	}
+
+	if err := userModel.Encrypt(); err != nil {
+		handler.SendResponse(ctx, err, nil)
+	}
+
+	if err := userModel.Update(); err != nil {
+		handler.SendResponse(ctx, err, nil)
+	}
+
+	handler.SendResponse(ctx, errno.OK, nil)
 
 }
 
 //用户列表
 func List(ctx *gin.Context) {
-	list, count, err := model.ListUser(1, 30)
+
+	var listRequest ListRequest
+
+	if err := ctx.ShouldBind(&listRequest); err != nil {
+		handler.SendResponse(ctx, err, nil)
+	}
+
+	list, count, err := service.ListUser(listRequest.Offset, listRequest.Limit)
 	if err != nil {
 		handler.SendResponse(ctx, err, nil)
 		return

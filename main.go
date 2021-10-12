@@ -21,7 +21,7 @@ func main() {
 	pflag.Parse()
 
 	//init config
-	if err := config.Init(*cfg);err != nil {
+	if err := config.Init(*cfg); err != nil {
 		log.Fatal(err.Error())
 	}
 
@@ -29,17 +29,17 @@ func main() {
 	model.DB.Init()
 	defer model.DB.Close()
 
-
 	gin.SetMode(viper.GetString("runmode"))
 
 	g := gin.New()
 
-	middlewares := []gin.HandlerFunc{}
+	middlewares := []gin.HandlerFunc{} //指定中间件
 
-	router.Load(g,middlewares)
+	//加载路由
+	router.Load(g, middlewares)
 
-	go func() {
-		if err := pingServer();err != nil {
+	go func() { //监控服务状态
+		if err := pingServer(); err != nil {
 			log.Fatal("The router has no response, or it might took too long to start up : ", err)
 		}
 		log.Printf("The router has been deployed successfully.")
@@ -49,11 +49,9 @@ func main() {
 	log.Printf(http.ListenAndServe(viper.GetString("addr"), g).Error())
 }
 
-
-
-func pingServer() error{
+func pingServer() error {
 	for i := 0; i < viper.GetInt("max_ping_count"); i++ {
-		res , err := http.Get(viper.GetString("url")+"/sd/health")
+		res, err := http.Get(viper.GetString("url") + "/sd/health")
 		if err == nil && res.StatusCode == http.StatusOK {
 			return nil
 		}

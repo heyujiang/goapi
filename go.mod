@@ -10,6 +10,7 @@ require (
 	github.com/shirou/gopsutil v3.21.8+incompatible
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.9.0
+	github.com/teris-io/shortid v0.0.0-20201117134242-e59966efd125
 	github.com/tklauser/go-sysconf v0.3.9 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
 	gopkg.in/go-playground/validator.v9 v9.31.0

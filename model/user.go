@@ -12,6 +12,15 @@ type UserModel struct {
 	Password string `json:"password" gorm:"cloumn:password;not null" binding:"required" validate:"min=5,max=128"`
 }
 
+type UserInfo struct {
+	Id        uint64 `json:"id"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	SayHello  string `json:"say_hello"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
+}
+
 func (u *UserModel) TableName() string {
 	return "tb_users"
 }
@@ -31,11 +40,19 @@ func (u *UserModel) Update() error {
 	return DB.Self.Save(u).Error
 }
 
-//根据主键id获得id信息
+//根据主键id获得用户信息
 func GetUser(id uint64) (*UserModel, error) {
 	u := &UserModel{}
 	d := DB.Self.Where("id = ?", id).First(&u)
 	return u, d.Error
+}
+
+//根据用户名称获得用户信息
+func GetUserByUserName(username string) (model *UserModel, err error) {
+	model = &UserModel{}
+	d := DB.Self.Where("username = ?", username).First(&model)
+	err = d.Error
+	return
 }
 
 //所有用户
@@ -47,7 +64,7 @@ func ListUser(offset, limit int) ([]*UserModel, uint64, error) {
 	user := make([]*UserModel, 0)
 	var count uint64
 
-	if err := DB.Self.Count(&count).Error; err != nil { //查询总条数
+	if err := DB.Self.Model(&UserModel{}).Count(&count).Error; err != nil { //查询总条数
 		return user, count, err
 	}
 

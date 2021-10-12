@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"goapi/handler/login"
 	"goapi/handler/sd"
 	"goapi/handler/user"
 	"goapi/router/middleware"
@@ -30,12 +31,14 @@ func Load(g *gin.Engine, middlewares []gin.HandlerFunc) *gin.Engine {
 
 	userrg := g.Group("/v1/user")
 	{
-		userrg.POST("", user.Create)       //创建用户
-		userrg.DELETE("/:id", user.Delete) //删除用户
-		userrg.PUT("/:id", user.Update)    //更新用户
-		userrg.GET("", user.List)          //用户列表
 		userrg.GET("/:id", user.Get)       //获取指定id的用户的详细信息
+		userrg.POST("", user.Create)       //创建用户
+		userrg.PUT("/:id", user.Update)    //更新用户
+		userrg.DELETE("/:id", user.Delete) //删除用户
+		userrg.GET("", user.List)          //用户列表
 	}
+
+	g.POST("/v1/login", login.Login) //登录
 
 	return g
 }

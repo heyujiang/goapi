@@ -34,7 +34,8 @@ func (config *Config) initConfig() error {
 	if config.Name != "" {
 		viper.SetConfigFile(config.Name) //如果指定了配置文件，解析指定的文件
 	} else {
-		viper.AddConfigPath("/Users/fangyamin/develop/golang/goapi/conf/") //解析默认的
+		//viper.AddConfigPath("/Users/fangyamin/develop/golang/goapi/conf/") //解析默认的
+		viper.AddConfigPath("/develop/golang/goapi/conf/") //解析默认的
 		viper.SetConfigName("config")
 	}
 
