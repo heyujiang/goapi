@@ -17,19 +17,20 @@ const (
 	GB = 1024 * MB
 )
 
-func HealthCheck(ctx *gin.Context)  {
-	ctx.String(http.StatusOK,"\nOK")
+func HealthCheck(ctx *gin.Context) {
+	ctx.String(http.StatusOK, "\nOK")
 }
 
-func DiskCheck(ctx *gin.Context)  {
-	u ,_ := disk.Usage("/")
+//磁盘
+func DiskCheck(ctx *gin.Context) {
+	u, _ := disk.Usage("/")
 
-	usedMB := int(u.Used)/ MB  //使用空间
+	usedMB := int(u.Used) / MB //使用空间
 	usedGB := int(u.Used) / GB
-	totalMB := int(u.Total) / MB  //可使用空间
+	totalMB := int(u.Total) / MB //可使用空间
 	totalGB := int(u.Total) / GB
 
-	usedPercent := int(u.UsedPercent)  //医用百分比
+	usedPercent := int(u.UsedPercent) //已经使用百分比
 
 	status := http.StatusOK
 	text := "OK"
@@ -37,17 +38,18 @@ func DiskCheck(ctx *gin.Context)  {
 	if usedPercent >= 95 {
 		status = http.StatusOK
 		text = "CRITICAL"
-	}else if usedPercent >= 90 {
+	} else if usedPercent >= 90 {
 		status = http.StatusTooManyRequests
 		text = "WARNING"
 	}
 
 	message := fmt.Sprintf("%s - Free space: %dMB (%dGB) / %dMB (%dGB) | Used: %d%%", text, usedMB, usedGB, totalMB, totalGB, usedPercent)
 
-	ctx.String(status,"\n"+message)
+	ctx.String(status, "\n"+message)
 }
 
-func CPUCheck(ctx *gin.Context)  {
+//CPU
+func CPUCheck(ctx *gin.Context) {
 	cores, _ := cpu.Counts(false)
 
 	a, _ := load.Avg()
@@ -70,7 +72,8 @@ func CPUCheck(ctx *gin.Context)  {
 	ctx.String(status, "\n"+message)
 }
 
-func RAMCheck(ctx *gin.Context)  {
+//RAM
+func RAMCheck(ctx *gin.Context) {
 	u, _ := mem.VirtualMemory()
 
 	usedMB := int(u.Used) / MB
