@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="43f5c9fd-98ef-4232-a120-7d459fce2302" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handler/sd/check.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/sd/check.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,11 +22,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="19">
-              <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
+            <state>
+              <caret column="5" selection-start-column="5" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -40,10 +40,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/handler/sd/check.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="570">
+            <state relative-caret-position="180">
               <caret line="72" column="1" lean-forward="true" selection-start-line="72" selection-start-column="1" selection-end-line="72" selection-end-column="1" />
               <folding>
                 <element signature="e#12#207#0" expanded="true" />
@@ -127,7 +127,6 @@
         <option value="$PROJECT_DIR$/model/user.go" />
         <option value="$PROJECT_DIR$/model/model.go" />
         <option value="$PROJECT_DIR$/conf/config.yaml" />
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/handler/user/create.go" />
         <option value="$PROJECT_DIR$/handler/user/delete.go" />
         <option value="$PROJECT_DIR$/handler/user/get.go" />
@@ -135,6 +134,7 @@
         <option value="$PROJECT_DIR$/handler/user/list.go" />
         <option value="$PROJECT_DIR$/handler/user/user.go" />
         <option value="$PROJECT_DIR$/handler/sd/check.go" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -249,7 +249,7 @@
       <window_info anchor="bottom" id="TODO" order="7" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Version Control" order="10" visible="true" weight="0.06538049" />
+      <window_info anchor="bottom" id="Version Control" order="10" visible="true" weight="0.2261522" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.38528138" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -448,13 +448,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/handler/user/update.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="38">
@@ -538,13 +531,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/handler/sd/check.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
+        <state relative-caret-position="180">
           <caret line="72" column="1" lean-forward="true" selection-start-line="72" selection-start-column="1" selection-end-line="72" selection-end-column="1" />
           <folding>
             <element signature="e#12#207#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="5" selection-start-column="5" selection-end-column="5" />
         </state>
       </provider>
     </entry>
