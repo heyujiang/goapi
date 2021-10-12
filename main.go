@@ -8,6 +8,7 @@ import (
 	"goapi/config"
 	"goapi/model"
 	"goapi/router"
+	"goapi/router/middleware"
 	"log"
 	"net/http"
 	"time"
@@ -33,7 +34,9 @@ func main() {
 
 	g := gin.New()
 
-	middlewares := []gin.HandlerFunc{} //指定中间件
+	middlewares := []gin.HandlerFunc{
+		middleware.Requestid(),
+	} //指定中间件
 
 	//加载路由
 	router.Load(g, middlewares)
