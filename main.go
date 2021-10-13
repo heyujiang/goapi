@@ -49,7 +49,9 @@ func main() {
 	}()
 
 	log.Printf("Start to listening the incoming requests on http address: %s", viper.GetString("addr"))
-	log.Printf(http.ListenAndServe(viper.GetString("addr"), g).Error())
+
+	//log.Printf(http.ListenAndServe(viper.GetString("addr"), g).Error())
+	log.Printf(g.Run(viper.GetString("addr")).Error())
 }
 
 func pingServer() error {

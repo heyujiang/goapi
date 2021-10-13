@@ -3,6 +3,8 @@ package login
 import (
 	"github.com/gin-gonic/gin"
 	"goapi/handler"
+	"goapi/model"
+	"goapi/pkg/errno"
 	"goapi/service/login"
 )
 
@@ -16,9 +18,16 @@ func Login(ctx *gin.Context) {
 
 	if err := ctx.ShouldBind(&loginRequest); err != nil {
 		handler.SendResponse(ctx, err, nil)
+		return
 	}
 
-	handler.SendResponse(ctx, login.Login(loginRequest.Username, loginRequest.Password), nil)
+	tokenString, err := login.Login(ctx, loginRequest.Username, loginRequest.Password)
+	if err != nil {
+		handler.SendResponse(ctx, err, nil)
+		return
+	}
+
+	handler.SendResponse(ctx, errno.LoginSuccess, model.Token{Token: tokenString})
 }
 
 func Logout(ctx *gin.Context) {

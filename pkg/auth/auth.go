@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -13,7 +12,5 @@ func Encrypt(source string) (string, error) {
 
 //校验密码是否正确
 func Compare(hashedPassword, password string) error {
-	fmt.Println(hashedPassword)
-	fmt.Println(password)
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }

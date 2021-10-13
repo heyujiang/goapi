@@ -22,3 +22,5 @@ docker_database:
 gormlog: true
 
 db_default_limit: 50
+
+jwt_secret: jwt_secret

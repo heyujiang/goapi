@@ -30,6 +30,7 @@ func Load(g *gin.Engine, middlewares []gin.HandlerFunc) *gin.Engine {
 	}
 
 	userrg := g.Group("/v1/user")
+	userrg.Use(middleware.AuthMiddleware) //JWT 用户登录中间件
 	{
 		userrg.GET("/:id", user.Get)       //获取指定id的用户的详细信息
 		userrg.POST("", user.Create)       //创建用户
