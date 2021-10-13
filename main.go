@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"goapi/cache/redis"
 	"goapi/config"
 	"goapi/model"
 	"goapi/router"
@@ -29,6 +30,10 @@ func main() {
 	//init db
 	model.DB.Init()
 	defer model.DB.Close()
+
+	//init Redis
+	redis.RH.Init()
+	defer redis.RH.Close()
 
 	gin.SetMode(viper.GetString("runmode"))
 

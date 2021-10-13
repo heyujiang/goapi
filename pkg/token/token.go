@@ -1,6 +1,7 @@
 package token
 
 import (
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -22,12 +23,14 @@ func Sign(ctx *gin.Context, context *Context) (tokenString string, err error) {
 		"username": context.Username,
 		"nbf":      time.Now().Unix(),
 		"iat":      time.Now().Unix(),
+		"exp":      time.Now().Add(60 * time.Second).Unix(),
 	})
 
 	tokenString, err = token.SignedString([]byte(secret))
 	return
 }
 
+//验证token
 func ParseRequest(ctx *gin.Context) (*Context, error) {
 	tokenString := ctx.Request.Header.Get("Authorization")
 	if len(tokenString) == 0 {
@@ -49,6 +52,9 @@ func Parse(tokenString, secret string) (*Context, error) {
 	} else if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		context.ID = uint64(claims["id"].(float64))
 		context.Username = claims["username"].(string)
+
+		fmt.Println(claims)
+
 		return context, nil
 	} else {
 		return context, err

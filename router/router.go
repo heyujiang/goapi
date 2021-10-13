@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goapi/handler/login"
 	"goapi/handler/sd"
+	"goapi/handler/shorturl"
 	"goapi/handler/user"
 	"goapi/router/middleware"
 	"net/http"
@@ -40,6 +41,8 @@ func Load(g *gin.Engine, middlewares []gin.HandlerFunc) *gin.Engine {
 	}
 
 	g.POST("/v1/login", login.Login) //登录
+
+	g.GET("/:shortStr", shorturl.RedirectToLongUrl)
 
 	return g
 }

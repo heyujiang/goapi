@@ -24,3 +24,8 @@ gormlog: true
 db_default_limit: 50
 
 jwt_secret: jwt_secret
+
+redis:
+  addr: 127.0.0.1:6379
+  password:
+  db: 0
