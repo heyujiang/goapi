@@ -1,18 +1,17 @@
 package shorturl
 
 import (
-	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"goapi/cache/redis"
+	"github.com/spf13/viper"
+	"goapi/handler"
+	shorturl2 "goapi/model/shorturl"
+	"goapi/pkg/errno"
 	"goapi/service/shorturl"
-	"time"
+	"log"
 )
 
 type GenerateShortUrlRequest struct {
 	LongUrl string `json:"long_url"`
-	AddUser string `json:"add_user"`
-	Type    int    `json:"type"`
 }
 
 type GenerateShortUrlResponse struct {
@@ -24,7 +23,29 @@ type GetLongUrlResponse struct {
 }
 
 func GenerateShortUrl(ctx *gin.Context) {
+	var g GenerateShortUrlRequest
+	log.Println(g)
+	if err := ctx.Bind(&g); err != nil {
+		handler.SendResponse(ctx, err, nil)
+		return
+	}
 
+	//生成短链接
+	strs := shorturl.GenerateShortUrl(g.LongUrl)
+
+	shortUrl := strs[0]
+
+	model := shorturl2.ShorturlModel{
+		LongUrl:  g.LongUrl,
+		ShortUrl: shortUrl,
+	}
+
+	if err := model.Create(); err != nil {
+		handler.SendResponse(ctx, err, nil)
+	}
+
+	baseDemain := viper.GetString("base_domain")
+	handler.SendResponse(ctx, errno.OK, GenerateShortUrlResponse{ShortUrl: baseDemain + "/" + shortUrl})
 }
 
 func GetLongUrl(ctx *gin.Context) {
@@ -32,21 +53,9 @@ func GetLongUrl(ctx *gin.Context) {
 }
 
 func RedirectToLongUrl(ctx *gin.Context) {
-
-	c := context.Background()
-
-	redis.RH.Self.Set(c, "hello", "hello redis gin", 10*time.Second).Result()
-
-	name, err := redis.RH.Self.Get(c, "hello").Result()
-	if err != nil {
-
-	}
-
-	fmt.Println(name)
-
 	shortStr := ctx.Param("shortStr")
 
-	longUrl := shorturl.GetLongUrl(shortStr)
+	longUrl, _ := shorturl.GetLongUrl(shortStr)
 
 	ctx.Redirect(302, longUrl)
 }

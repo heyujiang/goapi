@@ -27,4 +27,5 @@ func getSelfRedis() *redis.Client {
 		Password: viper.GetString("redis.password"),
 		DB:       viper.GetInt("redis.db"),
 	})
+
 }

@@ -42,6 +42,7 @@ func Load(g *gin.Engine, middlewares []gin.HandlerFunc) *gin.Engine {
 
 	g.POST("/v1/login", login.Login) //登录
 
+	g.POST("/createShortUrl", shorturl.GenerateShortUrl)
 	g.GET("/:shortStr", shorturl.RedirectToLongUrl)
 
 	return g
