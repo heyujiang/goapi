@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goapi/entity/dto"
 	"goapi/entity/vo"
-	"goapi/service/shorturl"
+	"goapi/service"
 )
 
 //生成短链接并保存
@@ -16,7 +16,7 @@ func GenerateShortUrl(ctx *gin.Context) {
 	}
 
 	//生成短链接
-	shortUrl, err := shorturl.GenerateShortUrl(g.LongUrl)
+	shortUrl, err := service.GenerateShortUrl(g.LongUrl)
 	if err != nil {
 		SendError(ctx, err, nil)
 		return
@@ -30,7 +30,7 @@ func GenerateShortUrl(ctx *gin.Context) {
 func RedirectToLongUrl(ctx *gin.Context) {
 	shortStr := ctx.Param("shortStr")
 
-	longUrl, _ := shorturl.GetLongUrl(shortStr)
+	longUrl, _ := service.GetLongUrl(shortStr)
 
 	ctx.Redirect(302, longUrl)
 }

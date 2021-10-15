@@ -1,7 +1,7 @@
-package shorturl
+package util
 
 import "testing"
 
 func TestGenerateShortUrl(t *testing.T) {
-	GenerateShortUrl("232323")
+	LongToShortUrl("232323")
 }
