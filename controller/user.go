@@ -2,10 +2,10 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"goapi/entity/dto"
 	"goapi/model"
 	"goapi/pkg/errno"
 	"goapi/service"
-	"goapi/service/login"
 	"strconv"
 )
 
@@ -143,20 +143,16 @@ func UserList(ctx *gin.Context) {
 
 }
 
-type LoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
+//用户登录
 func Login(ctx *gin.Context) {
-	var loginRequest LoginRequest
+	var loginDto dto.LoginDto
 
-	if err := ctx.ShouldBind(&loginRequest); err != nil {
+	if err := ctx.ShouldBind(&loginDto); err != nil {
 		SendError(ctx, err, nil)
 		return
 	}
 
-	tokenString, err := login.Login(ctx, loginRequest.Username, loginRequest.Password)
+	tokenString, err := service.Login(loginDto.Username, loginDto.Password)
 	if err != nil {
 		SendError(ctx, err, nil)
 		return

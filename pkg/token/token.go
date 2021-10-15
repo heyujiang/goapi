@@ -15,7 +15,7 @@ type Context struct {
 }
 
 //登录获得token
-func Sign(ctx *gin.Context, context *Context) (tokenString string, err error) {
+func Sign(context *Context) (tokenString string, err error) {
 	secret := viper.GetString("jwt_secret")
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"goapi/model"
 	"goapi/pkg/errno"
+	"goapi/pkg/token"
 	"goapi/util"
 	"sync"
 )
@@ -100,4 +101,28 @@ func ListUser(offset, limit int) ([]model.UserInfo, uint64, error) {
 	}
 
 	return infos, count, nil
+}
+
+//用户登录
+func Login(username, password string) (string, error) {
+	//根据用户名获得用户信息
+	userModel, err := model.GetUserByUserName(username)
+	if err != nil {
+		return "", err
+	}
+
+	if userModel == nil {
+		return "", errno.NoUsername
+	}
+
+	if err := userModel.Compare(password); err != nil {
+		return "", err
+	}
+
+	tokenString, err := token.Sign(&token.Context{userModel.Id, userModel.Username})
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
 }
