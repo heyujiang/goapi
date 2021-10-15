@@ -23,7 +23,7 @@ func Sign(context *Context) (tokenString string, err error) {
 		"username": context.Username,
 		"nbf":      time.Now().Unix(),
 		"iat":      time.Now().Unix(),
-		"exp":      time.Now().Add(60 * time.Second).Unix(),
+		"exp":      time.Now().Add(86400 * time.Second).Unix(),
 	})
 
 	tokenString, err = token.SignedString([]byte(secret))

@@ -41,6 +41,7 @@ func CreateUser(ctx *gin.Context) {
 
 	if err := service.CreateUser(createUserBo); err != nil {
 		SendError(ctx, err, nil)
+		return
 	}
 
 	SendSuccess(ctx, vo.CreateUserVo{createUserDto.Username})
