@@ -68,14 +68,8 @@ func CreateUser(ctx *gin.Context) {
 func DeleteUser(ctx *gin.Context) {
 	userId, _ := strconv.Atoi(ctx.Param("id"))
 
-	user := model.UserModel{
-		BaseModel: model.BaseModel{
-			Id: uint64(userId),
-		},
-	}
-
-	if err := user.Delete(); err != nil {
-		SendError(ctx, errno.ErrDeleteUser, nil)
+	if err := service.DeleteUserById(uint64(userId)); err != nil {
+		SendError(ctx, err, nil)
 		return
 	}
 
@@ -87,10 +81,9 @@ func DeleteUser(ctx *gin.Context) {
 func GetUserInfo(ctx *gin.Context) {
 	userId, _ := strconv.Atoi(ctx.Param("id"))
 
-	user, err := model.GetUser(uint64(userId))
-
+	user, err := service.GetUserInfoById(uint64(userId))
 	if err != nil {
-		SendError(ctx, errno.ErrData, nil)
+		SendError(ctx, err, nil)
 		return
 	}
 

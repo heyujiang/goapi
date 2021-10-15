@@ -3,9 +3,34 @@ package service
 import (
 	"fmt"
 	"goapi/model"
+	"goapi/pkg/errno"
 	"goapi/util"
 	"sync"
 )
+
+func DeleteUserById(userId uint64) error {
+	user := model.UserModel{
+		BaseModel: model.BaseModel{
+			Id: userId,
+		},
+	}
+
+	if err := user.Delete(); err != nil {
+		return errno.ErrDeleteUser
+	}
+
+	return nil
+}
+
+func GetUserInfoById(userId uint64) (*model.UserModel, error) {
+	user, err := model.GetUser(uint64(userId))
+
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
 
 func ListUser(offset, limit int) ([]model.UserInfo, uint64, error) {
 
