@@ -2,12 +2,37 @@ package service
 
 import (
 	"fmt"
+	"goapi/entity/bo"
 	"goapi/model"
 	"goapi/pkg/errno"
 	"goapi/pkg/token"
 	"goapi/util"
 	"sync"
 )
+
+func CreateUser(so *bo.CreateUserBo) error {
+	u := model.UserModel{
+		Username: so.Username,
+		Password: so.Password,
+	}
+
+	//验证数据
+	if err := u.Validate(); err != nil {
+		return err
+	}
+
+	//用户密码加密
+	if err := u.Encrypt(); err != nil {
+		return errno.ErrEncrypt
+	}
+
+	//创建用户
+	if err := u.Create(); err != nil {
+		return errno.ErrCreateUser
+	}
+
+	return nil
+}
 
 func DeleteUserById(userId uint64) error {
 	user := model.UserModel{

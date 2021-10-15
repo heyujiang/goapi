@@ -2,7 +2,9 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"goapi/entity/bo"
 	"goapi/entity/dto"
+	"goapi/entity/vo"
 	"goapi/model"
 	"goapi/pkg/errno"
 	"goapi/service"
@@ -25,42 +27,23 @@ type ListRequest struct {
 
 //创建新用户
 func CreateUser(ctx *gin.Context) {
-	var r UserRequest
+	var createUserDto dto.CreateUserDto
 
-	var err error
-	if err := ctx.Bind(&r); err != nil {
+	if err := ctx.Bind(&createUserDto); err != nil {
 		SendError(ctx, errno.ErrBind, nil)
 		return
 	}
 
-	u := model.UserModel{
-		Username: r.Username,
-		Password: r.Password,
+	createUserBo := &bo.CreateUserBo{
+		Username: createUserDto.Username,
+		Password: createUserDto.Password,
 	}
 
-	//验证数据
-	if err = u.Validate(); err != nil {
-		SendError(ctx, errno.ErrVaildation, nil)
-		return
+	if err := service.CreateUser(createUserBo); err != nil {
+		SendError(ctx, err, nil)
 	}
 
-	//用户密码加密
-	if err = u.Encrypt(); err != nil {
-		SendError(ctx, errno.ErrEncrypt, nil)
-		return
-	}
-
-	//创建用户
-	if err := u.Create(); err != nil {
-		SendError(ctx, errno.ErrCreateUser, nil)
-		return
-	}
-
-	rsp := UserResponse{
-		Username: r.Username,
-	}
-
-	SendSuccess(ctx, rsp)
+	SendSuccess(ctx, vo.CreateUserVo{createUserDto.Username})
 	return
 }
 
