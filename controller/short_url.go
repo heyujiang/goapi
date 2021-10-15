@@ -3,26 +3,19 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"goapi/entity/dto"
+	"goapi/entity/vo"
 	shorturl2 "goapi/model/shorturl"
 	"goapi/service/shorturl"
-	"log"
 )
-
-type GenerateShortUrlRequest struct {
-	LongUrl string `json:"long_url"`
-}
-
-type GenerateShortUrlResponse struct {
-	ShortUrl string `json:"short_url"`
-}
 
 type GetLongUrlResponse struct {
 	LongUrl string `json:"long_url"`
 }
 
+//生成短链接并保存
 func GenerateShortUrl(ctx *gin.Context) {
-	var g GenerateShortUrlRequest
-	log.Println(g)
+	var g dto.GenerateShortUrlDto
 	if err := ctx.Bind(&g); err != nil {
 		SendError(ctx, err, nil)
 		return
@@ -40,16 +33,15 @@ func GenerateShortUrl(ctx *gin.Context) {
 
 	if err := model.Create(); err != nil {
 		SendError(ctx, err, nil)
+		return
 	}
 
 	baseDemain := viper.GetString("base_domain")
-	SendSuccess(ctx, GenerateShortUrlResponse{ShortUrl: baseDemain + "/" + shortUrl})
+	SendSuccess(ctx, vo.GenerateShortUrlVo{ShortUrl: baseDemain + "/" + shortUrl})
+	return
 }
 
-func GetLongUrl(ctx *gin.Context) {
-
-}
-
+//短链接重定向值原始长连接
 func RedirectToLongUrl(ctx *gin.Context) {
 	shortStr := ctx.Param("shortStr")
 
