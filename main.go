@@ -16,14 +16,15 @@ import (
 )
 
 var (
-	cfg = pflag.StringP("config", "c", "", "apiserver config file path.")
+	//命令行参数 使用的配置文件的地址 默认为空
+	configFile = pflag.StringP("ConfigFile", "c", "", "config file path and name.")
 )
 
 func main() {
 	pflag.Parse()
 
 	//init config
-	if err := config.Init(*cfg); err != nil {
+	if err := config.Init(*configFile); err != nil {
 		log.Fatal(err.Error())
 	}
 
@@ -61,7 +62,7 @@ func main() {
 
 func pingServer() error {
 	for i := 0; i < viper.GetInt("max_ping_count"); i++ {
-		res, err := http.Get(viper.GetString("url") + "/sd/health")
+		res, err := http.Get(viper.GetString("url") + "/server/health")
 		if err == nil && res.StatusCode == http.StatusOK {
 			return nil
 		}
@@ -73,3 +74,28 @@ func pingServer() error {
 
 	return errors.New("Cannot connect to the router.")
 }
+
+/*
+├─ Project Name
+│  ├─ config          //配置文件
+│     ├── ...
+│  ├─ controller      //控制器层
+│     ├── ...
+│  ├─ service         //业务层
+│     ├── ...
+│  ├─ repository      //数据库操作层
+│     ├── ...
+│  ├─ model           //数据库ORM
+│     ├── ...
+│  ├─ entity          //实体
+│     ├── ...
+│  ├─ proto           //proto文件
+│     ├── ...
+│  ├─ router          //路由
+│     ├── middleware  //路由中间件
+│         ├── ...
+│     ├── ...
+│  ├─ util            //工具类
+│     ├── ...
+│  ├─ main.go         //入口文件
+*/

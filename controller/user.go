@@ -1,4 +1,4 @@
-package user
+package controller
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 	"goapi/model"
 	"goapi/pkg/errno"
 	"goapi/service"
+	"goapi/service/login"
 	"strconv"
 )
 
@@ -25,7 +26,7 @@ type ListRequest struct {
 }
 
 //创建新用户
-func Create(ctx *gin.Context) {
+func CreateUser(ctx *gin.Context) {
 	var r UserRequest
 
 	var err error
@@ -66,7 +67,7 @@ func Create(ctx *gin.Context) {
 }
 
 //删除用户
-func Delete(ctx *gin.Context) {
+func DeleteUser(ctx *gin.Context) {
 	userId, _ := strconv.Atoi(ctx.Param("id"))
 
 	user := model.UserModel{
@@ -83,7 +84,7 @@ func Delete(ctx *gin.Context) {
 }
 
 //根据Id获得用户信息
-func Get(ctx *gin.Context) {
+func GetUserInfo(ctx *gin.Context) {
 	userId, _ := strconv.Atoi(ctx.Param("id"))
 
 	user, err := model.GetUser(uint64(userId))
@@ -98,7 +99,7 @@ func Get(ctx *gin.Context) {
 }
 
 //更新用户
-func Update(ctx *gin.Context) {
+func UpdateUser(ctx *gin.Context) {
 	userId, _ := strconv.Atoi(ctx.Param("id"))
 
 	var userModel model.UserModel
@@ -126,7 +127,7 @@ func Update(ctx *gin.Context) {
 }
 
 //用户列表
-func List(ctx *gin.Context) {
+func UserList(ctx *gin.Context) {
 
 	var listRequest ListRequest
 
@@ -147,4 +148,26 @@ func List(ctx *gin.Context) {
 	handler.SendResponse(ctx, nil, res)
 	return
 
+}
+
+type LoginRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func Login(ctx *gin.Context) {
+	var loginRequest LoginRequest
+
+	if err := ctx.ShouldBind(&loginRequest); err != nil {
+		handler.SendResponse(ctx, err, nil)
+		return
+	}
+
+	tokenString, err := login.Login(ctx, loginRequest.Username, loginRequest.Password)
+	if err != nil {
+		handler.SendResponse(ctx, err, nil)
+		return
+	}
+
+	handler.SendResponse(ctx, errno.LoginSuccess, model.Token{Token: tokenString})
 }

@@ -2,10 +2,8 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"goapi/handler/login"
-	"goapi/handler/sd"
+	"goapi/controller"
 	"goapi/handler/shorturl"
-	"goapi/handler/user"
 	"goapi/router/middleware"
 	"net/http"
 )
@@ -22,25 +20,26 @@ func Load(g *gin.Engine, middlewares []gin.HandlerFunc) *gin.Engine {
 	g.Use(middleware.Secure)
 	g.Use(middlewares...)
 
-	sdrg := g.Group("/sd")
+	//服务器信息相关接口
+	sdrg := g.Group("/server")
 	{
-		sdrg.GET("/health", sd.HealthCheck)
-		sdrg.GET("/disk", sd.DiskCheck)
-		sdrg.GET("/cpu", sd.CPUCheck)
-		sdrg.GET("/ram", sd.RAMCheck)
+		sdrg.GET("/health", controller.HealthCheck)
+		sdrg.GET("/disk", controller.DiskCheck)
+		sdrg.GET("/cpu", controller.CPUCheck)
+		sdrg.GET("/ram", controller.RAMCheck)
 	}
 
-	userrg := g.Group("/v1/user")
+	userrg := g.Group("/user")
 	userrg.Use(middleware.AuthMiddleware) //JWT 用户登录中间件
 	{
-		userrg.GET("/:id", user.Get)       //获取指定id的用户的详细信息
-		userrg.POST("", user.Create)       //创建用户
-		userrg.PUT("/:id", user.Update)    //更新用户
-		userrg.DELETE("/:id", user.Delete) //删除用户
-		userrg.GET("", user.List)          //用户列表
+		userrg.GET("/:id", controller.GetUserInfo)   //获取指定id的用户的详细信息
+		userrg.POST("", controller.CreateUser)       //创建用户
+		userrg.PUT("/:id", controller.UpdateUser)    //更新用户
+		userrg.DELETE("/:id", controller.DeleteUser) //删除用户
+		userrg.GET("", controller.UserList)          //用户列表
 	}
 
-	g.POST("/v1/login", login.Login) //登录
+	g.POST("/login", controller.Login) //登录
 
 	g.POST("/createShortUrl", shorturl.GenerateShortUrl)
 	g.GET("/:shortStr", shorturl.RedirectToLongUrl)
