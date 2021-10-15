@@ -3,7 +3,6 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"goapi/controller"
-	"goapi/handler/shorturl"
 	"goapi/router/middleware"
 	"net/http"
 )
@@ -41,8 +40,8 @@ func Load(g *gin.Engine, middlewares []gin.HandlerFunc) *gin.Engine {
 
 	g.POST("/login", controller.Login) //登录
 
-	g.POST("/createShortUrl", shorturl.GenerateShortUrl)
-	g.GET("/:shortStr", shorturl.RedirectToLongUrl)
+	g.POST("/createShortUrl", controller.GenerateShortUrl)
+	g.GET("/:shortStr", controller.RedirectToLongUrl)
 
 	return g
 }

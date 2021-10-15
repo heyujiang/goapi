@@ -3,9 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
-	"goapi/handler"
 	shorturl2 "goapi/model/shorturl"
-	"goapi/pkg/errno"
 	"goapi/service/shorturl"
 	"log"
 )
@@ -26,7 +24,7 @@ func GenerateShortUrl(ctx *gin.Context) {
 	var g GenerateShortUrlRequest
 	log.Println(g)
 	if err := ctx.Bind(&g); err != nil {
-		handler.SendResponse(ctx, err, nil)
+		SendError(ctx, err, nil)
 		return
 	}
 
@@ -41,11 +39,11 @@ func GenerateShortUrl(ctx *gin.Context) {
 	}
 
 	if err := model.Create(); err != nil {
-		handler.SendResponse(ctx, err, nil)
+		SendError(ctx, err, nil)
 	}
 
 	baseDemain := viper.GetString("base_domain")
-	handler.SendResponse(ctx, errno.OK, GenerateShortUrlResponse{ShortUrl: baseDemain + "/" + shortUrl})
+	SendSuccess(ctx, GenerateShortUrlResponse{ShortUrl: baseDemain + "/" + shortUrl})
 }
 
 func GetLongUrl(ctx *gin.Context) {

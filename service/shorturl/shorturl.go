@@ -22,30 +22,18 @@ var chars []byte = []byte{
 
 func GenerateShortUrl(longUrl string) []string {
 	has := util.Md5(longUrl)
-
 	log.Println(has)
-
 	strs := make([]string, 4)
 	for i := 0; i < 4; i++ {
 		sTempString := has[i*8 : (i+1)*8]
-		log.Println(sTempString)
-
 		s, _ := strconv.ParseUint(sTempString, 16, 32)
-		log.Println(s)
-
 		ii := 0x3FFFFFFF & s
-
 		strBytes := make([]byte, 6)
 		for j := 0; j < 6; j++ {
 			index := 0x0000003D & ii
-
 			strBytes[j] = chars[index]
-
-			log.Println(index)
 			ii = ii >> 5
 		}
-
-		log.Println("==========")
 		strs[i] = string(strBytes)
 	}
 

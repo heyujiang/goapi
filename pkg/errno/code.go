@@ -2,7 +2,8 @@ package errno
 
 var (
 	// Common errors
-	OK = &Errno{Code: 200, Message: "OK"}
+	OK      = &Errno{Code: 200, Message: "OK"}
+	SUCCESS = &Errno{Code: 200, Message: "Success."}
 
 	LoginSuccess = &Errno{Code: 200, Message: "Login Success!"}
 	NoUsername   = &Errno{Code: 100, Message: "Username is no found."}

@@ -1,9 +1,7 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"goapi/handler"
 	"goapi/model"
 	"goapi/pkg/errno"
 	"goapi/service"
@@ -31,7 +29,7 @@ func CreateUser(ctx *gin.Context) {
 
 	var err error
 	if err := ctx.Bind(&r); err != nil {
-		handler.SendResponse(ctx, errno.ErrBind, nil)
+		SendError(ctx, errno.ErrBind, nil)
 		return
 	}
 
@@ -42,19 +40,19 @@ func CreateUser(ctx *gin.Context) {
 
 	//验证数据
 	if err = u.Validate(); err != nil {
-		handler.SendResponse(ctx, errno.ErrVaildation, nil)
+		SendError(ctx, errno.ErrVaildation, nil)
 		return
 	}
 
 	//用户密码加密
 	if err = u.Encrypt(); err != nil {
-		handler.SendResponse(ctx, errno.ErrEncrypt, nil)
+		SendError(ctx, errno.ErrEncrypt, nil)
 		return
 	}
 
 	//创建用户
 	if err := u.Create(); err != nil {
-		handler.SendResponse(ctx, errno.ErrCreateUser, nil)
+		SendError(ctx, errno.ErrCreateUser, nil)
 		return
 	}
 
@@ -62,8 +60,8 @@ func CreateUser(ctx *gin.Context) {
 		Username: r.Username,
 	}
 
-	handler.SendResponse(ctx, nil, rsp)
-
+	SendSuccess(ctx, rsp)
+	return
 }
 
 //删除用户
@@ -77,10 +75,12 @@ func DeleteUser(ctx *gin.Context) {
 	}
 
 	if err := user.Delete(); err != nil {
-		handler.SendResponse(ctx, errno.ErrDeleteUser, nil)
+		SendError(ctx, errno.ErrDeleteUser, nil)
+		return
 	}
 
-	handler.SendResponse(ctx, nil, nil)
+	SendSuccess(ctx, nil)
+	return
 }
 
 //根据Id获得用户信息
@@ -90,12 +90,12 @@ func GetUserInfo(ctx *gin.Context) {
 	user, err := model.GetUser(uint64(userId))
 
 	if err != nil {
-		fmt.Println(err.Error())
-		handler.SendResponse(ctx, errno.ErrData, nil)
+		SendError(ctx, errno.ErrData, nil)
 		return
 	}
 
-	handler.SendResponse(ctx, nil, user)
+	SendSuccess(ctx, user)
+	return
 }
 
 //更新用户
@@ -105,24 +105,24 @@ func UpdateUser(ctx *gin.Context) {
 	var userModel model.UserModel
 
 	if err := ctx.Bind(&userModel); err != nil {
-		handler.SendResponse(ctx, err, nil)
+		SendError(ctx, err, nil)
 	}
 
 	userModel.Id = uint64(userId)
 
 	if err := userModel.Validate(); err != nil {
-		handler.SendResponse(ctx, err, nil)
+		SendError(ctx, err, nil)
 	}
 
 	if err := userModel.Encrypt(); err != nil {
-		handler.SendResponse(ctx, err, nil)
+		SendError(ctx, err, nil)
 	}
 
 	if err := userModel.Update(); err != nil {
-		handler.SendResponse(ctx, err, nil)
+		SendError(ctx, err, nil)
 	}
 
-	handler.SendResponse(ctx, errno.OK, nil)
+	SendSuccess(ctx, nil)
 
 }
 
@@ -132,12 +132,12 @@ func UserList(ctx *gin.Context) {
 	var listRequest ListRequest
 
 	if err := ctx.ShouldBind(&listRequest); err != nil {
-		handler.SendResponse(ctx, err, nil)
+		SendError(ctx, err, nil)
 	}
 
 	list, count, err := service.ListUser(listRequest.Offset, listRequest.Limit)
 	if err != nil {
-		handler.SendResponse(ctx, err, nil)
+		SendError(ctx, err, nil)
 		return
 	}
 
@@ -145,7 +145,7 @@ func UserList(ctx *gin.Context) {
 	res["list"] = list
 	res["count"] = count
 
-	handler.SendResponse(ctx, nil, res)
+	SendSuccess(ctx, res)
 	return
 
 }
@@ -159,15 +159,16 @@ func Login(ctx *gin.Context) {
 	var loginRequest LoginRequest
 
 	if err := ctx.ShouldBind(&loginRequest); err != nil {
-		handler.SendResponse(ctx, err, nil)
+		SendError(ctx, err, nil)
 		return
 	}
 
 	tokenString, err := login.Login(ctx, loginRequest.Username, loginRequest.Password)
 	if err != nil {
-		handler.SendResponse(ctx, err, nil)
+		SendError(ctx, err, nil)
 		return
 	}
 
-	handler.SendResponse(ctx, errno.LoginSuccess, model.Token{Token: tokenString})
+	SendSuccess(ctx, model.Token{Token: tokenString})
+	return
 }
