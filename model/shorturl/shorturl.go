@@ -1,6 +1,9 @@
 package shorturl
 
-import "goapi/model"
+import (
+	"goapi/model"
+	"goapi/pkg/client"
+)
 
 type ShorturlModel struct {
 	model.BaseModel
@@ -13,11 +16,11 @@ func (s *ShorturlModel) TableName() string {
 }
 
 func (s *ShorturlModel) Create() error {
-	return model.DB.Self.Create(&s).Error
+	return client.MySqlClients.Self.Create(&s).Error
 }
 
 func GetInfoByShortUrl(shortUrl string) (*ShorturlModel, error) {
 	s := &ShorturlModel{}
-	d := model.DB.Self.Where("short_url = ?", shortUrl).First(&s)
+	d := client.MySqlClients.Self.Where("short_url = ?", shortUrl).First(&s)
 	return s, d.Error
 }

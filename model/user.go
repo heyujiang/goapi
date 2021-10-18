@@ -3,6 +3,7 @@ package model
 import (
 	"github.com/spf13/viper"
 	"goapi/pkg/auth"
+	"goapi/pkg/client"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -27,30 +28,30 @@ func (u *UserModel) TableName() string {
 
 //创建新用户
 func (u *UserModel) Create() error {
-	return DB.Self.Create(&u).Error
+	return client.MySqlClients.Self.Create(&u).Error
 }
 
 //删除用户
 func (u *UserModel) Delete() error {
-	return DB.Self.Delete(&u).Error
+	return client.MySqlClients.Self.Delete(&u).Error
 }
 
 //更新用户
 func (u *UserModel) Update() error {
-	return DB.Self.Save(u).Error
+	return client.MySqlClients.Self.Save(u).Error
 }
 
 //根据主键id获得用户信息
 func GetUser(id uint64) (*UserModel, error) {
 	u := &UserModel{}
-	d := DB.Self.Where("id = ?", id).First(&u)
+	d := client.MySqlClients.Self.Where("id = ?", id).First(&u)
 	return u, d.Error
 }
 
 //根据用户名称获得用户信息
 func GetUserByUserName(username string) (model *UserModel, err error) {
 	model = &UserModel{}
-	d := DB.Self.Where("username = ?", username).First(&model)
+	d := client.MySqlClients.Self.Where("username = ?", username).First(&model)
 	err = d.Error
 	return
 }
@@ -64,11 +65,11 @@ func ListUser(offset, limit int) ([]*UserModel, uint64, error) {
 	user := make([]*UserModel, 0)
 	var count uint64
 
-	if err := DB.Self.Model(&UserModel{}).Count(&count).Error; err != nil { //查询总条数
+	if err := client.MySqlClients.Self.Model(&UserModel{}).Count(&count).Error; err != nil { //查询总条数
 		return user, count, err
 	}
 
-	if err := DB.Self.Offset(offset).Limit(limit).Order("id desc").Find(&user).Error; err != nil {
+	if err := client.MySqlClients.Self.Offset(offset).Limit(limit).Order("id desc").Find(&user).Error; err != nil {
 		return user, count, err
 	}
 

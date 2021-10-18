@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 	"github.com/spf13/viper"
-	"goapi/cache/redis"
 	"goapi/model/shorturl"
+	"goapi/pkg/client"
 	"goapi/util"
 	"log"
 	"time"
@@ -28,7 +28,7 @@ func GenerateShortUrl(longUrl string) (string, error) {
 
 	//保存缓存
 	c := context.Background()
-	_, _ = redis.RH.Self.Set(c, shortUrl, longUrl, 86400*time.Second).Result()
+	_, _ = client.RedisClients.Self.Set(c, shortUrl, longUrl, 86400*time.Second).Result()
 
 	return baseDemain + "/" + shortUrl, nil
 }
@@ -42,7 +42,7 @@ func GetLongUrl(shortUrl string) (string, error) {
 	//读取缓存的长连接
 	c := context.Background()
 
-	longUrl, _ := redis.RH.Self.Get(c, shortUrl).Result()
+	longUrl, _ := client.RedisClients.Self.Get(c, shortUrl).Result()
 	log.Printf("redis cache shortUrl : %s , longUrl : %s ;", shortUrl, longUrl)
 
 	//从数据库读取
@@ -62,7 +62,7 @@ func GetLongUrl(shortUrl string) (string, error) {
 		longUrl = s.LongUrl
 
 		//保存缓存
-		_, _ = redis.RH.Self.Set(c, shortUrl, longUrl, 86400*time.Second).Result()
+		_, _ = client.RedisClients.Self.Set(c, shortUrl, longUrl, 86400*time.Second).Result()
 	}
 
 	return longUrl, nil

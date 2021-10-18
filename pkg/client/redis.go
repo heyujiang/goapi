@@ -1,4 +1,4 @@
-package redis
+package client
 
 import (
 	"github.com/go-redis/redis/v8"
@@ -9,10 +9,10 @@ type RedisHelper struct {
 	Self *redis.Client
 }
 
-var RH *RedisHelper
+var RedisClients *RedisHelper
 
 func (rh *RedisHelper) Init() {
-	RH = &RedisHelper{
+	RedisClients = &RedisHelper{
 		Self: getSelfRedis(),
 	}
 }

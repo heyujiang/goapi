@@ -5,9 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"goapi/cache/redis"
 	"goapi/config"
-	"goapi/model"
+	"goapi/pkg/client"
 	"goapi/router"
 	"goapi/router/middleware"
 	"log"
@@ -29,12 +28,12 @@ func main() {
 	}
 
 	//init db
-	model.DB.Init()
-	defer model.DB.Close()
+	client.MySqlClients.Init()
+	defer client.MySqlClients.Close()
 
 	//init Redis
-	redis.RH.Init()
-	defer redis.RH.Close()
+	client.RedisClients.Init()
+	defer client.RedisClients.Close()
 
 	gin.SetMode(viper.GetString("runmode"))
 
