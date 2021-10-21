@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/json"
+	"fmt"
 	"goapi/config"
 	"goapi/model/lagou"
 	"goapi/pkg/client"
@@ -9,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"sync"
 )
 
 var (
@@ -110,27 +112,27 @@ func GetAllCourse() {
 		return
 	}
 
-	//courselen := len(response.Content.ContentCardList[4].CourseList)
-	//wg := sync.WaitGroup{}
-	//wg.Add(courselen)
+	courselen := len(response.Content.ContentCardList[4].CourseList)
+	wg := sync.WaitGroup{}
+	wg.Add(courselen)
 
 	for _, courseInfo := range response.Content.ContentCardList[4].CourseList {
-		//courseModel := lagou.CourseModel{
-		//	CourseId:courseInfo.Id,
-		//	Title:courseInfo.Title,
-		//	Brief:courseInfo.Brief,
-		//	Image:courseInfo.Image,
-		//	TeacherName:courseInfo.TeacherName,
-		//	TeacherTitle:courseInfo.TeacherTitle,
-		//}
-		//if err := courseModel.Create(); err != nil {
-		//	fmt.Println(err.Error())
-		//}
+		courseModel := lagou.CourseModel{
+			CourseId:     courseInfo.Id,
+			Title:        courseInfo.Title,
+			Brief:        courseInfo.Brief,
+			Image:        courseInfo.Image,
+			TeacherName:  courseInfo.TeacherName,
+			TeacherTitle: courseInfo.TeacherTitle,
+		}
+		if err := courseModel.Create(); err != nil {
+			fmt.Println(err.Error())
+		}
 
-		GetCourseMenu(courseInfo.Id)
+		go GetCourseMenu(courseInfo.Id, &wg)
 	}
 
-	//wg.Wait()
+	wg.Wait()
 
 }
 
@@ -165,8 +167,8 @@ type Lessons struct {
 	LessonSortNum int    `json:"lessonSortNum"`
 }
 
-func GetCourseMenu(courseId int) {
-	//defer wg.Done()
+func GetCourseMenu(courseId int, wg *sync.WaitGroup) {
+	defer wg.Done()
 	url := courseMenuUrl + strconv.Itoa(courseId)
 	log.Println("获得专栏模块菜单url:", url, "；专栏编号：", courseId)
 	body, err := GetData(url)
@@ -188,37 +190,37 @@ func GetCourseMenu(courseId int) {
 
 	for _, section := range response.Content.CourseSectionList {
 		//创建section
-		//sectionModel := lagou.SectionModel{
-		//	SectionId:section.Id,
-		//	CourseId:section.CourseId,
-		//	SectionName:section.SectionName,
-		//	Sort:section.SectionSortNum,
-		//	Description:section.Description,
-		//}
-		//if err := sectionModel.Create(); err != nil {
-		//	log.Println("获得专栏模块菜创建数据错误:",response.Message,"；",sectionModel)
-		//}
+		sectionModel := lagou.SectionModel{
+			SectionId:   section.Id,
+			CourseId:    section.CourseId,
+			SectionName: section.SectionName,
+			Sort:        section.SectionSortNum,
+			Description: section.Description,
+		}
+		if err := sectionModel.Create(); err != nil {
+			log.Println("获得专栏模块菜创建数据错误:", response.Message, "；", sectionModel)
+		}
 
-		//lessonLen := len(section.CourseLessons)
-		//wg := sync.WaitGroup{}
-		//wg.Add(lessonLen)
+		lessonLen := len(section.CourseLessons)
+		wg := sync.WaitGroup{}
+		wg.Add(lessonLen)
 		for _, lessons := range section.CourseLessons {
 			//创建lesson
-			//lessonModel := lagou.LessonModel{
-			//	LessonId:lessons.Id,
-			//	SectionId:lessons.SectionId,
-			//	CourseId:lessons.CourseId,
-			//	Theme:lessons.Theme,
-			//	Sort:lessons.LessonSortNum,
-			//}
-			//if err := lessonModel.Create(); err != nil {
-			//	log.Println("获得专栏模块菜创建数据错误:",response.Message,"；",lessonModel)
-			//}
+			lessonModel := lagou.LessonModel{
+				LessonId:  lessons.Id,
+				SectionId: lessons.SectionId,
+				CourseId:  lessons.CourseId,
+				Theme:     lessons.Theme,
+				Sort:      lessons.LessonSortNum,
+			}
+			if err := lessonModel.Create(); err != nil {
+				log.Println("获得专栏模块菜创建数据错误:", response.Message, "；", lessonModel)
+			}
 
-			GetCourseContent(lessons.Id)
+			go GetCourseContent(lessons.Id, &wg)
 
 		}
-		//wg.Wait()
+		wg.Wait()
 	}
 }
 
@@ -240,8 +242,8 @@ type ContentContent struct {
 	TextContent string `json:"textContent"`
 }
 
-func GetCourseContent(lessonsId int /*,wg *sync.WaitGroup*/) {
-	//defer wg.Done()
+func GetCourseContent(lessonsId int, wg *sync.WaitGroup) {
+	defer wg.Done()
 
 	url := courseContentUrl + strconv.Itoa(lessonsId)
 	log.Println("获得文章信息接口错误URL：", url)
