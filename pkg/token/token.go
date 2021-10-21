@@ -2,8 +2,8 @@ package token
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 	"github.com/spf13/viper"
 	"goapi/pkg/errno"
 	"time"
@@ -50,6 +50,7 @@ func Parse(tokenString, secret string) (*Context, error) {
 	if err != nil {
 		return context, err
 	} else if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+
 		context.ID = uint64(claims["id"].(float64))
 		context.Username = claims["username"].(string)
 
