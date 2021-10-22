@@ -43,5 +43,12 @@ func Load(g *gin.Engine, middlewares []gin.HandlerFunc) *gin.Engine {
 	g.POST("/createShortUrl", controller.GenerateShortUrl)
 	g.GET("/:shortStr", controller.RedirectToLongUrl)
 
+	course := g.Group("/course")
+	{
+		course.GET("", controller.CourseList)
+		course.GET("/lessons/:id", controller.Lessons)
+		course.GET("/lessonDetail/:id", controller.LessonDetail)
+	}
+
 	return g
 }

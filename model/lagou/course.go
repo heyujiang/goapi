@@ -22,3 +22,20 @@ func (u *CourseModel) TableName() string {
 func (c *CourseModel) Create() error {
 	return client.MySqlClients.Self.Create(&c).Error
 }
+
+func ListCourse() ([]CourseModel, error) {
+	courseList := make([]CourseModel, 0)
+
+	err := client.MySqlClients.Self.Order("course_id asc").Find(&courseList).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return courseList, nil
+}
+
+func GetCourse(id int) (*CourseModel, error) {
+	u := &CourseModel{}
+	d := client.MySqlClients.Self.Where("course_id = ?", id).First(&u)
+	return u, d.Error
+}

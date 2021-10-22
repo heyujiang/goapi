@@ -21,3 +21,19 @@ func (u *LessonModel) TableName() string {
 func (l *LessonModel) Create() error {
 	return client.MySqlClients.Self.Create(&l).Error
 }
+
+func ListLesson(sectionIds []int) ([]LessonModel, error) {
+	var l []LessonModel
+
+	if err := client.MySqlClients.Self.Where(" section_id in (?)", sectionIds).Find(&l).Error; err != nil {
+		return nil, err
+	}
+
+	return l, nil
+}
+
+func GetLesson(id int) (*LessonModel, error) {
+	u := &LessonModel{}
+	d := client.MySqlClients.Self.Where("lesson_id = ?", id).First(&u)
+	return u, d.Error
+}

@@ -21,3 +21,18 @@ func (u *SectionModel) TableName() string {
 func (s *SectionModel) Create() error {
 	return client.MySqlClients.Self.Create(&s).Error
 }
+
+func ListSection(courseId int) ([]SectionModel, error) {
+	var s []SectionModel
+	if err := client.MySqlClients.Self.Where("course_id = ?", courseId).Find(&s).Error; err != nil {
+		return nil, err
+	}
+
+	return s, nil
+}
+
+func GetSection(id uint64) (*SectionModel, error) {
+	u := &SectionModel{}
+	d := client.MySqlClients.Self.Where("section_id = ?", id).First(&u)
+	return u, d.Error
+}
