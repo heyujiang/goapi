@@ -55,7 +55,10 @@ func GetData(url string) ([]byte, error) {
 	}
 
 	resp, err := client.Do(req)
-	defer resp.Body.Close()
+	if resp != nil {
+		defer resp.Body.Close()
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -246,7 +249,7 @@ func GetCourseContent(lessonsId int, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	url := courseContentUrl + strconv.Itoa(lessonsId)
-	log.Println("获得文章信息接口错误URL：", url)
+	log.Println("获得文章信息接口URL：", url)
 	body, err := GetData(url)
 	if err != nil {
 		log.Println("获得文章信息请求接口错误：", err.Error(), "；文章id：", lessonsId)
