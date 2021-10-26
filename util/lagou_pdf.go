@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os/exec"
 	"path/filepath"
 )
@@ -89,6 +90,8 @@ func (this *HtmlToPdf) buildPrams() {
 }
 
 func Pdf(htmlPath, pdfPath string) {
+	log.Println(htmlPath)
+	log.Println(pdfPath)
 	pdfOpt := NewPdf()
 	str, err := pdfOpt.OutFile(htmlPath, pdfPath)
 	if err != nil {

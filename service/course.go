@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	"github.com/spf13/viper"
 	"goapi/entity/vo"
 	"goapi/model/lagou"
 	"goapi/util"
@@ -185,8 +186,8 @@ func CreatePdf(courseId int) (string, error) {
 </html>
 `)
 
-	htmlFile := "D:/develop/golang/goapi/course/" + course.Title + ".html"
-	pdfFile := "D:/develop/golang/goapi/course/pdf/" + course.Title + ".pdf"
+	htmlFile := viper.GetString("pdf.html_path") + course.Title + ".html"
+	pdfFile := viper.GetString("pdf.pdf_path") + course.Title + ".pdf"
 
 	file1, err := os.Create(htmlFile)
 	defer file1.Close()
