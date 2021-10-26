@@ -48,6 +48,9 @@ func Load(g *gin.Engine, middlewares []gin.HandlerFunc) *gin.Engine {
 		course.GET("", controller.CourseList)
 		course.GET("/lessons/:id", controller.Lessons)
 		course.GET("/lessonDetail/:id", controller.LessonDetail)
+
+		course.GET("/create/:id", controller.CreatePdf)
+		course.GET("/create", controller.CreatePdfAll)
 	}
 
 	return g

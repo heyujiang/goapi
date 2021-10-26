@@ -1,8 +1,11 @@
 package service
 
 import (
+	"bytes"
 	"goapi/entity/vo"
 	"goapi/model/lagou"
+	"goapi/util"
+	"os"
 )
 
 func GetCourseList() ([]vo.CourseVo, error) {
@@ -93,4 +96,130 @@ func GetLessonsDetail(lessonId int) (*vo.LessonContentVo, error) {
 	}
 
 	return info, nil
+}
+
+func CreatePdf(courseId int) (string, error) {
+	//文章信息
+	course, err := lagou.GetCourse(courseId)
+	if err != nil {
+		return "", err
+	}
+
+	LessonList, err := GetLessonsList(course.CourseId)
+	if err != nil {
+		return "", err
+	}
+
+	var buffer bytes.Buffer
+
+	buffer.WriteString(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>` + course.Title + `</title>
+</head>
+<style>
+    .c{
+        width: 90%;
+        margin: auto;
+    }
+    .content_div{
+        width: 100%;
+        box-sizing: border-box;
+        padding: 20px;
+    }
+    .content_div img {
+        width: 100%;
+    }
+    .content_div p {
+        margin-bottom: 20px;
+        line-height: 20px;
+    }
+    .c h1{
+        margin-top: 80px;
+    }
+    .c h2 {
+        margin-top:  50px;
+    }
+    .c h3 {
+        margin-top: 30px;
+    }
+    .c h4 {
+        margin-top: 20px;
+    }
+    .c h1,h2,h3,h4{
+        margin-bottom: 20px;
+    }
+</style>
+<body>
+<div class="c">
+`)
+
+	for _, sectionInfo := range LessonList {
+		//菜单
+		buffer.WriteString("<h1>")
+		buffer.WriteString(sectionInfo.SectionName)
+		buffer.WriteString("</h1>")
+		buffer.WriteString("<hr>")
+
+		for _, lessonInfo := range sectionInfo.Lessons {
+			buffer.WriteString("<h2>")
+			buffer.WriteString(lessonInfo.Theme)
+			buffer.WriteString("</h2>")
+
+			lessonContent, err := GetLessonsDetail(lessonInfo.LessonId)
+			if err != nil {
+				return "", err
+			}
+
+			buffer.WriteString(`<div class="content_div">`)
+			buffer.WriteString(lessonContent.Content)
+			buffer.WriteString("</div>")
+		}
+	}
+	buffer.WriteString(`
+</div>
+
+</body>
+</html>
+`)
+
+	htmlFile := "D:/develop/golang/goapi/course/" + course.Title + ".html"
+	pdfFile := "D:/develop/golang/goapi/course/pdf/" + course.Title + ".pdf"
+
+	file1, err := os.Create(htmlFile)
+	defer file1.Close()
+	if err != nil {
+		return "", err
+	}
+
+	_, err = file1.Write(buffer.Bytes())
+	if err != nil {
+		return "", err
+	}
+
+	util.Pdf(htmlFile, pdfFile)
+
+	return course.Title, nil
+}
+
+func CreatePdfAll() (string, error) {
+	courseList, err := GetCourseList()
+	if err != nil {
+		return "", err
+	}
+
+	//wg := sync.WaitGroup{}
+	for _, courseInfo := range courseList {
+		//wg.Add(1)
+		//go CreatePdf(courseInfo.CourseId,&wg)
+		_, err := CreatePdf(courseInfo.CourseId)
+		if err != nil {
+			return "", err
+		}
+	}
+	//wg.Wait()
+
+	return "SUCCESS", nil
 }

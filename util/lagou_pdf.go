@@ -31,8 +31,7 @@ func NewPdf() *HtmlToPdf {
 		"-T":                    "32",
 	}
 	return &HtmlToPdf{
-		//Commond: "wkhtmltopdf",
-		Commond: "D:/soft/wkhtmltopdf/bin/wkhtmltopdf.exe",
+		Commond: "wkhtmltopdf",
 		argsMap: args,
 	}
 }
@@ -89,11 +88,9 @@ func (this *HtmlToPdf) buildPrams() {
 	this.prams = append(this.prams, this.in, this.out)
 }
 
-func Pdf() {
+func Pdf(htmlPath, pdfPath string) {
 	pdfOpt := NewPdf()
-	htmlDemoPath := "lagou.html"
-	PdfDemoPath := "lagou.pdf"
-	str, err := pdfOpt.OutFile(htmlDemoPath, PdfDemoPath)
+	str, err := pdfOpt.OutFile(htmlPath, pdfPath)
 	if err != nil {
 		fmt.Println("Error ", err)
 		return
