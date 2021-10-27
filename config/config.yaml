@@ -8,8 +8,8 @@ database:
   host: 127.0.0.1
   port: 3306
   user: root
-  password: 123456
-#  password: root
+#  password: 123456
+  password: root
   db: db_goapi
 
 
@@ -17,8 +17,8 @@ docker_database:
   host: 127.0.0.1
   port: 3306
   user: root
-  password: 123456
-#  password: root
+#  password: 123456
+  password: root
   db: db_goapi
 
 gormlog: true
@@ -37,5 +37,7 @@ base_domain: http://127.0.0.1:8080
 
 
 pdf:
-  html_path: /Users/fangyamin/develop/golang/goapi/course/
-  pdf_path: /Users/fangyamin/develop/golang/goapi/course/pdf/
+#  html_path: /Users/fangyamin/develop/golang/goapi/course/
+#  pdf_path: /Users/fangyamin/develop/golang/goapi/course/pdf/
+  html_path: D:/develop/golang/goapi/course/
+  pdf_path: D:/develop/golang/goapi/course/pdf/
