@@ -1,4 +1,4 @@
-package util
+package htmltopdf
 
 import (
 	"github.com/spf13/viper"
@@ -7,12 +7,12 @@ import (
 	"testing"
 )
 
-func TestPdf(t *testing.T) {
+func TestCreatePdf(t *testing.T) {
 	//init config
 	if err := config.Init(""); err != nil {
 		log.Fatal(err.Error())
 	}
 	htmlPath := viper.GetString("pdf.html_path")
 	pdfPath := viper.GetString("pdf.pdf_path")
-	Pdf(htmlPath+"lagou.html", pdfPath+"logou.pdf")
+	CreatePdf(htmlPath+"22 讲通关 Go 语言.html", pdfPath+"22 讲通关 Go 语言.pdf")
 }

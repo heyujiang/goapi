@@ -1,4 +1,4 @@
-package util
+package htmltopdf
 
 import (
 	"context"
@@ -89,7 +89,7 @@ func (this *HtmlToPdf) buildPrams() {
 	this.prams = append(this.prams, this.in, this.out)
 }
 
-func Pdf(htmlPath, pdfPath string) {
+func CreatePdf(htmlPath, pdfPath string) {
 	log.Println(htmlPath)
 	log.Println(pdfPath)
 	pdfOpt := NewPdf()

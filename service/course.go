@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/viper"
 	"goapi/entity/vo"
 	"goapi/model/lagou"
-	"goapi/util"
+	"goapi/pkg/htmltopdf"
 	"os"
 )
 
@@ -121,8 +121,8 @@ func CreatePdf(courseId int) (string, error) {
     <title>` + course.Title + `</title>
 </head>
 <style>
-    .c{
-        width: 90%;
+     .c,.title{
+        width: 98%;
         margin: auto;
     }
     .content_div{
@@ -135,7 +135,8 @@ func CreatePdf(courseId int) (string, error) {
     }
     .content_div p {
         margin-bottom: 20px;
-        line-height: 20px;
+        line-height: 30px;
+        font-size: 25px;
     }
     .c h1{
         margin-top: 80px;
@@ -154,6 +155,22 @@ func CreatePdf(courseId int) (string, error) {
     }
 </style>
 <body>
+<div class="title">
+`)
+	buffer.WriteString("<h1>" + course.Title + "</h1><ul>")
+
+	for _, sectionInfo := range LessonList {
+		buffer.WriteString("<li><h2>" + sectionInfo.SectionName + "</h2></li>")
+		buffer.WriteString("<ul>")
+		for _, lessonInfo := range sectionInfo.Lessons {
+			buffer.WriteString("<li><h3>" + lessonInfo.Theme + "</h3></li>")
+		}
+		buffer.WriteString("</ul>")
+	}
+
+	buffer.WriteString(`
+    </ul>
+</div>
 <div class="c">
 `)
 
@@ -200,7 +217,7 @@ func CreatePdf(courseId int) (string, error) {
 		return "", err
 	}
 
-	util.Pdf(htmlFile, pdfFile)
+	htmltopdf.CreatePdf(htmlFile, pdfFile)
 
 	return course.Title, nil
 }
@@ -211,16 +228,12 @@ func CreatePdfAll() (string, error) {
 		return "", err
 	}
 
-	//wg := sync.WaitGroup{}
 	for _, courseInfo := range courseList {
-		//wg.Add(1)
-		//go CreatePdf(courseInfo.CourseId,&wg)
 		_, err := CreatePdf(courseInfo.CourseId)
 		if err != nil {
 			return "", err
 		}
 	}
-	//wg.Wait()
 
 	return "SUCCESS", nil
 }
